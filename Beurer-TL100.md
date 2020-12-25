@@ -10,41 +10,43 @@ Tech: [BLE](https://www.polidea.com/blog/bluetooth-low-energy-sniffing-guide-par
   * Unknown Characteristic | *UUID: E06D5EFB-4F4A-45C0-9EB1-371AE5A14AD4* => always reads 0x01
 
 ## Lamp Control Characteristic - General Commands structure:
-[Header: 0xFEEF0a09ABAA0][Command Type: [43,53,63,93]][Values: various][Footer: 0x550D0A]
+Header | Command Type | Values | Footer
+------ | ------------ | ------ | ------
+0xFEEF0a09ABAA0 | 0x43,0x53,0x63 | various | 0x550D0A
+
 Everything is Hexadecimal
 
-* Header: 0xfeef0a09abaa0
-* Command Type:
-  * 0x43: ON/OFF commands
+Command Types:
+* *0x43: ON/OFF/Modes*
+  * ON/OFF
     * 0x4370132 --- White on (mid-intensity)
     * 0x4350130 --- White off
     * 0x4370231 --- Colors on (coupled with rainbow)
     * 0x4350233 --- Colors off
     * 0x438023E --- Timer ON (2h)
     * 0x4360230 --- Timer OFF
-    * Color modes
-      * Rainbow: 0x70231 (on as well)
-      * Static: 0x40030
-      * Mode x: 0x40131
-      * Mode x: 0x40232
-      * Mode x: 0x40333
-      * Mode x: 0x40434
-      * Mode x: 0x40535
-      * Mode x: 0x40636
-      * Mode x: 0x40737
-      * Mode x: 0x40838
-      * Mode x: 0x40939
-      * Mode x: 0x40A3A
-  * 0x53: Intensity
-    * 0x53101 -- [0x0001 until 0x9999] white dimming
-    * 0x53102 -- [0x0000 until 0x9999] color dimming
-    * 0x53302 -- [0x0100 until 0x78FF] timer length - where each 0x100 (or 256d) = 1min. => 1 to 121min.
-      * Note 2: hardware seem to truncate to the minute, so 0x0099 bing under 1min is an immediate shutdown.
-  * 0x63: Changing Colors, followed by the color in strange format 0x2RRGGBB00
-    * For example, red is 0x632FF000000
-    * Changing colors stops the color modes
-
-* Footer: 0x550D0A
+  * Color modes
+    * Rainbow: 0x70231 (on as well)
+    * Static: 0x40030
+    * Mode x: 0x40131
+    * Mode x: 0x40232
+    * Mode x: 0x40333
+    * Mode x: 0x40434
+    * Mode x: 0x40535
+    * Mode x: 0x40636
+    * Mode x: 0x40737
+    * Mode x: 0x40838
+    * Mode x: 0x40939
+    * Mode x: 0x40A3A
+* *0x53: Intensity*
+  * 0x53101 -- [0x0001 until 0x9999] white dimming
+  * 0x53102 -- [0x0000 until 0x9999] color dimming
+  * 0x53302 -- [0x0100 until 0x78FF] timer length - where each 0x100 (or 256d) = 1min. => 1 to 121min.
+    * Note 2: hardware seem to truncate to the minute, so 0x0099 bing under 1min is an immediate shutdown.
+* *0x63: Changing Colors*
+  * 0x63 is followed by the color in strange format 0x2RRGGBB00. Last 00 can be anything.
+  * For example, red is 0x632FF000000
+  * Changing colors switched the color mode to static
 
 ## Lamp Control Characteristic - Protocol
 
